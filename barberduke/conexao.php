@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$usuario = "u782979727_hstygi";       
-$senha = "0dx_WEIS-_";             
-$banco = "u782979727_hstygi"; 
+$usuario = "seu usuario";       
+$senha = "sua senha";             
+$banco = "seu banco"; 
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$banco;charset=utf8mb4", $usuario, $senha);
@@ -13,3 +13,4 @@ try {
     die("Erro na conexão: " . $e->getMessage());
 }
 ?>
+
