@@ -1,0 +1,170 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(120deg, #011122, #024282);
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* container principal */
+main {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* título */
+h1 {
+  font-size: 2.6rem;
+  color: #a5ffa5;
+  margin-bottom: 2rem;
+}
+
+/* card principal (quando tem assinatura) */
+.assinatura-box {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  width: 100%;
+  max-width: 800px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assinatura-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 50px rgba(0, 180, 255, 0.35);
+}
+
+.assinatura-box h2 {
+  font-size: 1.8rem;
+  color: #00b4ff;
+  margin-bottom: 1rem;
+}
+
+.assinatura-box p {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+}
+
+.assinatura-box strong {
+  color: #a5ffa5;
+}
+
+/* quando o cliente não tem assinatura */
+.sem-assinatura {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(16px);
+  border-radius: 25px;
+  padding: 4rem 3rem;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.9);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.sem-assinatura h1 {
+  color: #ffb347;
+  font-size: 2.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.sem-assinatura p {
+  color: #ffffff;
+  font-size: 1.6rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+
+/* botão gigante */
+.btn-plano {
+  display: inline-block;
+  background: linear-gradient(180deg, #00b4ff, #0094d9);
+  color: white;
+  padding: 1.6rem 2.8rem;
+  border-radius: 18px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.6rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 10px 30px rgba(0, 180, 255, 0.4);
+}
+
+.btn-plano:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 45px rgba(0, 160, 220, 0.55);
+}
+
+/* animação */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* responsivo */
+@media (max-width: 900px) {
+  .sem-assinatura {
+    max-width: 95%;
+    padding: 4rem 2.5rem;
+  }
+
+  .sem-assinatura h1 {
+    font-size: 2.2rem;
+  }
+
+  .sem-assinatura p {
+    font-size: 1.5rem;
+  }
+
+  .btn-plano {
+    width: 100%;
+    font-size: 1.6rem;
+    padding: 1.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 0 10px;
+  }
+
+  .sem-assinatura {
+    padding: 4rem 2rem;
+    max-width: 100%;
+  }
+
+  .sem-assinatura h1 {
+    font-size: 2.3rem;
+  }
+
+  .sem-assinatura p {
+    font-size: 2.0rem;
+  }
+
+  .btn-plano {
+    width: 100%;
+    padding: 2rem;
+    font-size: 1.8rem;
+    border-radius: 20px;
+  }
+}

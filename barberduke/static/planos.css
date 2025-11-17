@@ -1,0 +1,99 @@
+.b {
+  text-align: center;
+  margin-bottom: 20px;
+  color: rgb(0, 0, 0);
+}
+body {
+ font-family: 'Poppins', sans-serif;
+ background-color: #ffffff;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ min-height: 90vh;
+ margin: 0;
+ padding: 20px;
+}
+/* From Uiverse.io by alexruix */ 
+.card {
+ width: 190px;
+ height: 254px;
+ border-radius: 20px;
+ position: relative;
+ padding: 1.8rem;
+ border: 2px solid #c3c6ce;
+ transition: 0.5s ease-out;
+ overflow: visible;
+}
+
+.card-details {
+ color: black;
+ height: 100%;
+ gap: .5em;
+ display: grid;
+ place-content: center;
+}
+
+.card-button {
+ transform: translate(-50%, 125%);
+ width: 60%;
+ border-radius: 1rem;
+ border: none;
+ background-color: #008bf8;
+ color: #fff;
+ font-size: 1rem;
+ padding: .5rem 1rem;
+ position: absolute;
+ left: 50%;
+ bottom: 0;
+ opacity: 0;
+ transition: 0.3s ease-out;
+}
+
+.text-body {
+  font-size: 1.0em;
+  font-weight: Bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgb(65, 64, 64);
+}
+
+/*Text*/
+.text-title {
+ font-size: 1.5em;
+  font-weight: Bold;
+  color: rgb(0, 0, 0);
+  text-shadow: 1px 1px 2px rgb(58, 58, 58);
+}
+
+/*Hover*/
+.card:hover {
+ border-color: #008bf8;
+ box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+
+.card:hover .card-button {
+ transform: translate(-50%, 50%);
+ opacity: 1;
+}
+.card-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap; /* Permitir quebra de linha */
+}
+
+/* Em telas menores que 768px (tablets e celulares grandes) */
+@media (max-width: 768px) {
+  .card {
+    width: 45%; /* Dois cards por linha */
+    margin-bottom: 20px;
+  }
+}
+
+/* Em telas menores que 480px (celulares pequenos) */
+@media (max-width: 480px) {
+  .card {
+    width: 100%; /* Um card por linha */
+    margin-bottom: 20px;
+  }
+}

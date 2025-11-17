@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - Horários</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+  <style>
+    /* Pequenos ajustes visuais */
+    .menu { width: 200px; float: left; }
+    .conteudo { margin-left: 210px; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: center; }
+    .ativo { background-color: #c8e6c9; }
+    .inativo { background-color: #ffcdd2; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel Administrativo</h1>
+    <button class="menu-toggle">☰ Menu</button>
+  </header>
+
+  <div class="menu">
+    <nav>
+      <ul>
+        <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+        <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+        <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+        <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+        <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+        <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="conteudo">
+    <h2>Horários do Barbeiro</h2>
+
+    <label for="selBarbeiro">Barbeiro:</label>
+    <select id="selBarbeiro"></select>
+
+    <label for="selDiaSemana">Dia da semana:</label>
+    <select id="selDiaSemana">
+      <option value="0">Domingo</option>
+      <option value="1">Segunda</option>
+      <option value="2">Terça</option>
+      <option value="3">Quarta</option>
+      <option value="4">Quinta</option>
+      <option value="5">Sexta</option>
+      <option value="6">Sábado</option>
+    </select>
+
+    <button onclick="buscarHorarios()">Ver Horários</button>
+
+    <table id="tabelaHorarios">
+      <thead>
+        <tr>
+          <th>Horário</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3">Selecione barbeiro e dia para carregar horários</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h3>Adicionar/Editar Horário</h3>
+    <label>Horário início:</label>
+    <input type="time" id="inputInicio">
+    <label>Horário fim:</label>
+    <input type="time" id="inputFim">
+    <label>Almoço início:</label>
+    <input type="time" id="inputAlmocoInicio">
+    <label>Almoço fim:</label>
+    <input type="time" id="inputAlmocoFim">
+    <label>Ativo:</label>
+    <select id="inputAtivo">
+      <option value="1">Sim</option>
+      <option value="0">Não</option>
+    </select>
+    <button onclick="salvarHorario()">Salvar</button>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("aberto");
+      btn.textContent = menu.classList.contains("aberto") ? "✕ Fechar" : "☰ Menu";
+    });
+
+    carregarBarbeiros();
+  });
+
+  function carregarBarbeiros() {
+    fetch('/barberduke/api/barbeiros.php')
+      .then(res => res.json())
+      .then(data => {
+        const sel = document.getElementById('selBarbeiro');
+        sel.innerHTML = '<option value="">Selecione</option>';
+        data.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = b.nome;
+          sel.appendChild(opt);
+        });
+      });
+  }
+
+  function buscarHorarios() {
+    const barbeiro = document.getElementById('selBarbeiro').value;
+    const dia = document.getElementById('selDiaSemana').value;
+
+    if (!barbeiro) return alert("Selecione um barbeiro!");
+
+    fetch(`/barberduke/api/horario.php?barbeiro=${barbeiro}&dia=${dia}`)
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#tabelaHorarios tbody");
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3">Nenhum horário cadastrado</td></tr>';
+          return;
+        }
+
+        data.forEach(h => {
+          const tr = document.createElement('tr');
+          tr.className = h.ativo == 1 ? 'ativo' : 'inativo';
+          tr.innerHTML = `
+            <td>${h.inicio_expediente} - ${h.fim_expediente}</td>
+            <td>${h.ativo == 1 ? 'Ativo' : 'Inativo'}</td>
+            <td>
+              <button onclick="editarHorario(${h.id})">Editar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+  }
+
+  function salvarHorario() {
+    const barbeiro = document.getElementById('selBarbeiro').value;
+    const dia = document.getElementById('selDiaSemana').value;
+    const inicio = document.getElementById('inputInicio').value;
+    const fim = document.getElementById('inputFim').value;
+    const almocoInicio = document.getElementById('inputAlmocoInicio').value;
+    const almocoFim = document.getElementById('inputAlmocoFim').value;
+    const ativo = document.getElementById('inputAtivo').value;
+
+    if (!barbeiro || !inicio || !fim) return alert("Preencha todos os campos obrigatórios!");
+
+    fetch('/barberduke/api/horario_modificar.php', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        barbeiro, dia, inicio_expediente: inicio, fim_expediente: fim,
+        almoco_inicio: almocoInicio, almoco_fim: almocoFim, ativo
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.sucesso) {
+        alert("Horário salvo com sucesso!");
+        buscarHorarios();
+      } else {
+        alert("Erro ao salvar horário: " + (data.erro || ''));
+      }
+    });
+  }
+
+  function editarHorario(id) {
+    fetch(`/barberduke/api/horario.php?id=${id}`)
+      .then(res => res.json())
+      .then(h => {
+        document.getElementById('inputInicio').value = h.inicio_expediente;
+        document.getElementById('inputFim').value = h.fim_expediente;
+        document.getElementById('inputAlmocoInicio').value = h.almoco_inicio;
+        document.getElementById('inputAlmocoFim').value = h.almoco_fim;
+        document.getElementById('inputAtivo').value = h.ativo;
+      });
+  }
+  </script>
+</body>
+</html>

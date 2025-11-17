@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="menu-toggle">☰ Menu</button>
+  <title>Bloquear Horários</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("aberto");
+
+        if (menu.classList.contains("aberto")) {
+            btn.textContent = "✕ Fechar";
+        } else {
+            btn.textContent = "☰ Menu";
+        }
+    });
+});
+</script>
+<body>
+  <header>
+    <h1>Painel Administrativo - Bloquear Horários</h1>
+  </header>
+
+  <main>
+    <div class="menu">
+  <nav>
+    <ul>
+      <li><a href="/barberduke/templates/admin.html"></a></li>
+      <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+      <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+      <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+      <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+      <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+      <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+    </ul>
+  </nav>
+</div>
+
+    <section id="conteudo-principal">
+      <div class="bloqueios">
+        <h1>Bloquear Horários</h1>
+
+        <!-- Lista de bloqueios -->
+        <div id="lista-bloqueios">Carregando bloqueios...</div>
+
+        <hr>
+        <h4>Adicionar bloqueio</h4>
+
+        <label for="selectBarbeiro">Barbeiro:</label>
+        <select id="selectBarbeiro"></select>
+
+        <label for="dataBloqueio">Data:</label>
+        <input type="date" id="dataBloqueio">
+
+        <label for="horaInicio">Hora Início:</label>
+        <input type="text" id="horaInicio" placeholder="Ex: 09:00">
+
+        <label for="horaFim">Hora Fim:</label>
+        <input type="text" id="horaFim" placeholder="Ex: 12:00">
+
+        <button id="btnAdicionarBloqueio">Adicionar Bloqueio</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Carregar barbeiros no select
+    function carregarBarbeiros() {
+      fetch('/barberduke/api/barbeiros.php')
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById('selectBarbeiro');
+          select.innerHTML = '';
+          data.forEach(b => {
+            select.innerHTML += `<option value="${b.id}">${b.nome}</option>`;
+          });
+        });
+    }
+
+    // Carregar bloqueios
+    function carregarBloqueios() {
+    fetch('/barberduke/api/bloqueio_listar.php')
+        .then(res => res.json())
+        .then(data => {
+            const lista = document.getElementById('lista-bloqueios');
+
+            if (data.length === 0) {
+                lista.innerHTML = "Nenhum bloqueio registrado.";
+            } else {
+                let html = "<ul>";
+
+                // Aqui entra o seu trecho
+                data.forEach(b => {
+                    html += `<li>
+                        ${b.data} - ${b.horario} | ${b.barbeiro_nome} 
+                        <button onclick="removerBloqueio(${b.barbeiro_id}, '${b.data}', '${b.horario}')">Remover</button>
+                    </li>`;
+                });
+
+                html += "</ul>";
+                lista.innerHTML = html;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('lista-bloqueios').innerHTML = "Erro ao carregar bloqueios.";
+        });
+}
+
+
+    // Adicionar bloqueio
+    document.getElementById('btnAdicionarBloqueio').addEventListener('click', () => {
+      const barbeiro_id = document.getElementById('selectBarbeiro').value;
+      const data = document.getElementById('dataBloqueio').value;
+      const hora_inicio = document.getElementById('horaInicio').value;
+      const hora_fim = document.getElementById('horaFim').value;
+
+      fetch('/barberduke/api/bloqueio_adicionar.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({barbeiro_id, data, hora_inicio, hora_fim})
+      })
+      .then(res => res.json())
+      .then(result => {
+        alert(result.mensagem);
+        carregarBloqueios();
+      });
+    });
+
+    // Remover bloqueio
+    function removerBloqueio(barbeiro_id, data, horario) {
+    if (!confirm('Deseja realmente remover este bloqueio?')) return;
+
+    fetch('/barberduke/api/bloqueio_remover.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ barbeiro_id, data, horario })
+    })
+    .then(res => res.json())
+    .then(result => {
+        alert(result.mensagem);
+        carregarBloqueios(); // recarrega a lista de bloqueios
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro ao tentar remover o bloqueio.');
+    });
+}
+
+
+    // Inicialização
+    carregarBarbeiros();
+    carregarBloqueios();
+  </script>
+</body>
+</html>

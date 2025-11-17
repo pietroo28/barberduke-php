@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="menu-toggle">☰ Menu</button>
+  <title>Painel Administrativo</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("aberto");
+
+        if (menu.classList.contains("aberto")) {
+            btn.textContent = "✕ Fechar";
+        } else {
+            btn.textContent = "☰ Menu";
+        }
+    });
+});
+</script>
+<body>
+  <header>
+    <h1>Painel Administrativo</h1>
+  </header>
+
+  <main>
+
+<div class="menu">
+  <nav>
+    <ul>
+      <li><a href="/barberduke/templates/admin.html"></a></li>
+      <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+      <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+      <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+      <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+      <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+      <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+    </ul>
+  </nav>
+</div>
+
+    <!-- Conteúdo principal -->
+    <section id="conteudo-principal">
+
+      <!-- Barbeiros -->
+      <div class="barbeiros" id="secao-barbeiros" style="display:none;">
+        <h1>Barbeiros</h1>
+        <div id="lista-barbeiros">Carregando barbeiros...</div>
+
+        <hr>
+        <h4>Adicionar barbeiro</h4>
+        <label for="addNomeBarbeiro">Nome:</label>
+        <input type="text" id="addNomeBarbeiro">
+
+        <label for="addCPFBarbeiro">CPF:</label>
+        <input type="text" id="addCPFBarbeiro">
+
+        <label for="addStatusBarbeiro">Status:</label>
+        <select id="addStatusBarbeiro">
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+
+        <button id="btnAdicionarBarbeiro" onclick="adicionarBarbeiro()">Adicionar</button>
+
+        <hr>
+        <h4>Editar barbeiro</h4>
+        </select>
+
+        <label for="editNomeBarbeiro">Nome:</label>
+        <input type="text" id="editNomeBarbeiro">
+
+        <label for="editCPFBarbeiro">CPF:</label>
+        <input type="text" id="editCPFBarbeiro">
+
+        <label for="editStatusBarbeiro">Status:</label>
+        <select id="editStatusBarbeiro">
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+
+        <button id="btnEditarBarbeiro" onclick="editarBarbeiro()">Salvar Alterações</button>
+      </div>
+    </section>
+  </main>
+
+
+  <script src="/barberduke/script/admin.js"></script>
+</body>
+</html>

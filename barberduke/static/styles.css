@@ -1,0 +1,405 @@
+/* ==========================
+   Reset Básico
+========================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.5;
+}
+
+header {
+  background-color: #222;
+  color: #fff;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+/* ==========================
+   Layout
+========================== */
+main {
+  display: flex;
+  min-height: 100vh;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ==========================
+   Menu Lateral Slide
+========================== */
+.menu {
+  position: fixed;
+  top: 0;
+  left: -260px; /* escondido */
+  width: 240px;
+  height: 100vh;
+  background-color: #2d2d2d;
+  color: #fff;
+  padding-top: 30px;
+  transition: left 0.3s ease;
+  z-index: 999;
+}
+
+.menu.aberto {
+  left: 0; /* aparece deslizando */
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0 10px;
+}
+
+.menu ul li {
+  margin-bottom: 10px;
+}
+
+.menu ul li a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.menu ul li a:hover,
+.menu ul li a.ativo {
+  background-color: #444;
+}
+
+/* ==========================
+   Botão Hambúrguer (sempre visível)
+========================== */
+.menu-toggle {
+  background-color: #222;
+  color: white;
+  padding: 12px 20px;
+  cursor: pointer;
+  border: none;
+  font-size: 1.3rem;
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  z-index: 1000;
+  border-radius: 6px;
+}
+
+/* ==========================
+   Conteúdo Principal
+========================== */
+#conteudo-principal {
+  flex: 1;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* ==========================
+   Filtros de Clientes
+========================== */
+.filtros-clientes {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.filtros-clientes h2 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.filtros-clientes label {
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+.filtros-clientes input,
+.filtros-clientes select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* ==========================
+   Botões
+========================== */
+button {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #444;
+}
+
+button.btn-secundario {
+  background-color: #999;
+}
+
+button.btn-secundario:hover {
+  background-color: #777;
+}
+
+/* ==========================
+   Lista de clientes
+========================== */
+#lista-clientes {
+  margin-top: 20px;
+}
+
+#lista-clientes table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+}
+
+#lista-clientes th,
+#lista-clientes td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+#lista-clientes th {
+  background-color: #eee;
+  font-weight: bold;
+}
+
+.cliente-card {
+  background: #fff;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ==========================
+   Responsivo Extra
+========================== */
+@media (max-width: 950px) {
+  main {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .menu {
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    font-size: 1.4rem;
+  }
+
+  .filtros-clientes,
+  #conteudo-principal {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+/* (todo seu CSS anterior aqui...) */
+
+/* Quando o menu estiver aberto, empurre o conteúdo */
+.menu.aberto ~ #conteudo-principal {
+  margin-left: 240px; /* igual à largura do menu */
+  transition: margin-left 0.3s ease;
+}
+
+/* Para o botão menu-toggle, quando o menu estiver aberto, empurre para a direita */
+.menu.aberto ~ .menu-toggle {
+  left: 250px; /* desloca o botão para não ficar em cima do menu */
+  transition: left 0.3s ease;
+}
+/* ==========================
+   Tabela Agenda
+========================== */
+#tabelaAgenda {
+  width: 100%;
+  border-collapse: separate; /* bordas arredondadas separadas */
+  border-spacing: 0;
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#tabelaAgenda thead {
+  background-color: #222;
+  color: #fff;
+  text-align: left;
+}
+
+#tabelaAgenda thead th {
+  padding: 12px 15px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+#tabelaAgenda tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+#tabelaAgenda tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+#tabelaAgenda tbody td {
+  padding: 12px 15px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Alterna cores de linhas para melhor leitura */
+#tabelaAgenda tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Status com cores diferentes */
+#tabelaAgenda tbody td.status-pendente {
+  color: #e67e22;
+  font-weight: bold;
+}
+
+#tabelaAgenda tbody td.status-confirmado {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+#tabelaAgenda tbody td.status-cancelado {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  #tabelaAgenda thead {
+    display: none; /* esconde cabeçalho no mobile */
+  }
+
+  #tabelaAgenda, #tabelaAgenda tbody, #tabelaAgenda tr, #tabelaAgenda td {
+    display: block;
+    width: 100%;
+  }
+
+  #tabelaAgenda tr {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  #tabelaAgenda td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  #tabelaAgenda td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: calc(50% - 30px);
+    font-weight: bold;
+    text-align: left;
+  }
+}
+/* ==========================
+   Bloco de Filtros
+========================== */
+.filtros {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.filtros label {
+  display: block;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 5px;
+  font-size: 0.95rem;
+}
+
+/* Inputs e Selects */
+.filtros input[type="date"],
+.filtros select {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background-color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  min-width: 180px;
+}
+
+.filtros input[type="date"]:focus,
+.filtros select:focus {
+  outline: none;
+  border-color: #222;
+  box-shadow: 0 0 6px rgba(34,34,34,0.2);
+}
+
+/* Botão */
+.filtros button {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.filtros button:hover {
+  background-color: #444;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .filtros {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filtros input[type="date"],
+  .filtros select,
+  .filtros button {
+    width: 100%;
+    min-width: unset;
+  }
+}

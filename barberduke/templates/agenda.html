@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="menu-toggle">☰ Menu</button>
+  <title>Painel Administrativo - Clientes</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
+</head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #073c77;
+  }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("aberto");
+
+        if (menu.classList.contains("aberto")) {
+            btn.textContent = "✕ Fechar";
+        } else {
+            btn.textContent = "☰ Menu";
+        }
+    });
+});
+</script>
+<body>
+  <header>
+    <h1>Painel Administrativo - Clientes</h1>
+  </header>
+
+  <main>
+    <div class="menu">
+  <nav>
+    <ul>
+      <li><a href="/barberduke/templates/admin.html"></a></li>
+      <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+      <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+      <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+      <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+      <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+      <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+    </ul>
+  </nav>
+</div>
+
+    <section id="conteudo-principal">
+      <h2>Agenda de Clientes</h2>
+
+      <div class="filtros">
+        <label>Barbeiro:</label>
+        <select id="filtroBarbeiro"></select>
+
+        <label>Data:</label>
+        <input type="date" id="filtroData">
+
+        <button id="btnVerAgenda">Ver Agenda</button>
+      </div>
+      <div id="calendar"></div>
+      <table id="tabelaAgenda">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Horário</th>
+            <th>Cliente</th>
+            <th>Procedimento</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+  <script src="/barberduke/script/clientes.js"></script>
+</body>
+</html>

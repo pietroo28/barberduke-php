@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="menu-toggle">☰ Menu</button>
+  <title>Painel de Procedimentos</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("aberto");
+
+        if (menu.classList.contains("aberto")) {
+            btn.textContent = "✕ Fechar";
+        } else {
+            btn.textContent = "☰ Menu";
+        }
+    });
+});
+</script>
+<body>
+  <header>
+    <h1>Painel de Procedimentos</h1>
+  </header>
+
+  <main>
+    <!-- Menu lateral -->
+    <div class="menu">
+  <nav>
+    <ul>
+      <li><a href="/barberduke/templates/admin.html"></a></li>
+      <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+      <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+      <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+      <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+      <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+      <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+    </ul>
+  </nav>
+</div>
+
+    <!-- Conteúdo principal -->
+    <section id="conteudo-principal">
+
+      <!-- Procedimentos -->
+      <div class="procedimentos" id="secao-procedimentos">
+        <h2>Procedimentos</h2>
+
+        <div id="lista-procedimentos">Carregando procedimentos...</div>
+
+        <hr>
+
+        <h3>Adicionar procedimento</h3>
+<label for="addNomeProcedimento">Nome:</label>
+<input type="text" id="addNomeProcedimento">
+
+<label for="addDuracaoProcedimento">Duração (min):</label>
+<input type="number" id="addDuracaoProcedimento" min="1">
+
+<label for="addValorProcedimento">Valor (R$):</label>
+<input type="number" id="addValorProcedimento" min="0" step="0.01">
+
+<button onclick="adicionarProcedimento()">Adicionar</button>
+
+<hr>
+
+<h3>Editar procedimento</h3>
+<input type="hidden" id="editIdProcedimento">
+
+<label for="editNomeProcedimento">Nome:</label>
+<input type="text" id="editNomeProcedimento">
+
+<label for="editDuracaoProcedimento">Duração (min):</label>
+<input type="number" id="editDuracaoProcedimento" min="1">
+
+<label for="editValorProcedimento">Valor (R$):</label>
+<input type="number" id="editValorProcedimento" min="0" step="0.01">
+
+<button onclick="editarProcedimento()">Salvar alterações</button>
+
+      </div>
+
+    </section>
+  </main>
+
+  <script src="/barberduke/script/procedimentos.js"></script>
+</body>
+</html>

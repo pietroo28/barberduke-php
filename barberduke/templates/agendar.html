@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agendamento - Barber Duke</title>
+  <link rel="stylesheet" href="/barberduke/static/agenda.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+<main>
+  <h1 class="h1">Olá, <span id="nomeCliente">{{ nome_cliente }}</span>!</h1>
+
+  <div class="agendamento-box">
+    <h2>Agende seu horário</h2>
+    <form id="agendamentoForm">
+      <select id="barbeiro" required>
+        <option value="" disabled selected>Escolha um barbeiro</option>
+      </select>
+
+      <fieldset>
+    <legend>Procedimentos:</legend>
+    <div id="lista-procedimentos">
+        
+    </div>
+</fieldset>
+
+      <label for="data">Data:</label>
+      <input type="date" id="data" required />
+
+      <label for="horario">Horário:</label>
+      <select id="horario" required>
+        <option value="" disabled selected>Selecione uma data, barbeiro e procedimento</option>
+      </select>
+
+      <p class="valor-total">Valor total: R$ <span id="valorTotal">0.00</span></p>
+      <p class="tempo-total">Duração total: <span id="tempoTotal">0</span> minutos</p>
+
+      <button type="submit" class="botao-primario" onclick="enviarWhatsApp()">Agendar</button>
+    </form>
+
+    <p id="mensagemSucesso" style="color:green; display:none; margin-top:10px;"></p>
+    <p id="mensagemErro" style="color:red; display:none; margin-top:10px;"></p>
+
+    <button id="btnPlanos" class="botao-secundario" onclick="direção()">Ver planos</button>
+    <button id="btnAssinatura" class="botao-secundario">Minha Assinatura</button>
+    <button id="btnProximoAgendamento" class="botao-secundario" onclick="ver()">Ver agendamentos futuros</button>
+<div id="proximoAgendamento"></div>
+
+    <button id="btnloja" class="botao-secundario" onclick="loja()">Acessar loja</button>
+  </div>
+
+  <div id="proximoAgendamento"></div>
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const cpf = params.get("cpf");
+
+    // Redireciona para assinatura ao clicar no botão
+    const btnAssinatura = document.getElementById("btnAssinatura");
+    if (btnAssinatura && cpf) {
+        btnAssinatura.addEventListener("click", () => {
+            window.location.href = `/barberduke/api/assinatura.php?cpf=${cpf}`;
+        });
+    }
+});
+// ==============================
+// Redirecionamento para a página de planos
+// ==============================
+function direção() {
+    window.location.href = "/barberduke/templates/planos.html";
+}
+function loja() {
+    window.location.href = "https://loja-duke-whlyzplxii77h2vw.builder-preview.com/";
+}
+
+// ==============================
+// Inicializa o seletor de data com Flatpickr
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+    flatpickr("#data", {
+        dateFormat: "Y-m-d",
+        minDate: "today", // Bloqueia dias anteriores
+        disable: [
+            function(date) {
+                // Desativa domingos (0) e segundas (1)
+                return (date.getDay() === 0 || date.getDay() === 1);
+            }
+        ],
+        locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                longhand: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
+            },
+            months: {
+                shorthand: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                longhand: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            },
+        },
+        onChange: function() {
+            atualizarHorarios();
+        }
+    });
+});
+
+// ==============================
+// Carrega nome do cliente pelo CPF
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const cpf = params.get("cpf");
+    if (!cpf) return;
+
+    fetch(`/barberduke/api/chamar.php?cpf=${cpf}`)
+        .then(res => res.json())
+        .then(data => {
+            const nomeCliente = document.getElementById("nomeCliente");
+            nomeCliente.textContent = data.nome || "Cliente";
+        })
+        .catch(err => console.error("Erro ao carregar nome do cliente:", err));
+});
+
+// ==============================
+// Carrega procedimentos
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/barberduke/api/buscar.php")
+        .then(res => res.json())
+        .then(dados => {
+            const container = document.getElementById("lista-procedimentos");
+            container.innerHTML = "";
+
+            dados.forEach(proc => {
+                const label = document.createElement("label");
+                label.innerHTML = `
+                    <input type="checkbox" 
+                           name="procedimento[]" 
+                           value="${proc.id}" 
+                           data-valor="${proc.valor}" 
+                           data-tempo="${proc.duracao}" />
+                    ${proc.nome} (R$${parseFloat(proc.valor).toFixed(2)}) - ${proc.duracao}min
+                `;
+                container.appendChild(label);
+            });
+        })
+        .catch(erro => console.error("Erro ao buscar procedimentos:", erro));
+});
+
+// ==============================
+// Carrega barbeiros
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/barberduke/api/barbeiros.php")
+        .then(response => response.json())
+        .then(barbeiros => {
+            const select = document.getElementById("barbeiro");
+            select.innerHTML = '<option value="" disabled selected>Escolha um barbeiro</option>';
+
+            if (barbeiros.length === 0) {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "Nenhum barbeiro disponível";
+                option.disabled = true;
+                select.appendChild(option);
+                return;
+            }
+
+            barbeiros.forEach(b => {
+                const option = document.createElement("option");
+                option.value = b.id;
+                option.textContent = b.nome;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao carregar barbeiros:", error);
+            const select = document.getElementById("barbeiro");
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Erro ao carregar barbeiros";
+            option.disabled = true;
+            select.appendChild(option);
+        });
+});
+
+// ==============================
+// Função para atualizar valor e tempo totais
+// ==============================
+function atualizarTotais() {
+    const checkboxes = document.querySelectorAll("input[name='procedimento[]']:checked");
+    let valorTotal = 0;
+    let tempoTotal = 0;
+
+    checkboxes.forEach(cb => {
+        const valor = parseFloat(cb.getAttribute("data-valor")) || 0;
+        const tempo = parseInt(cb.getAttribute("data-tempo")) || 0;
+        valorTotal += valor;
+        tempoTotal += tempo;
+    });
+
+    document.getElementById("valorTotal").textContent = valorTotal.toFixed(2);
+    document.getElementById("tempoTotal").textContent = tempoTotal;
+}
+
+// ==============================
+// Atualiza horários disponíveis
+// ==============================
+async function atualizarHorarios() {
+    const barbeiroId = document.getElementById("barbeiro").value;
+    const data = document.getElementById("data").value;
+    const horarioSelect = document.getElementById("horario");
+
+    horarioSelect.innerHTML = '<option value="" disabled selected>Selecione um horário</option>';
+    if (!barbeiroId || !data) return;
+
+    const tempoTotal = parseInt(document.getElementById("tempoTotal").textContent) || 0;
+
+    try {
+        const url = tempoTotal > 0
+            ? `/barberduke/api/horarios.php?barbeiro=${barbeiroId}&data=${data}&duracao=${tempoTotal}`
+            : `/barberduke/api/horarios.php?barbeiro=${barbeiroId}&data=${data}`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Erro na requisição de horários");
+
+        const horarios = await response.json();
+
+        if (horarios.length === 0) {
+            const option = document.createElement("option");
+            option.textContent = "Nenhum horário disponível";
+            option.disabled = true;
+            horarioSelect.appendChild(option);
+            return;
+        }
+
+        horarios.forEach(h => {
+            const option = document.createElement("option");
+            option.value = h;
+            option.textContent = h;
+            horarioSelect.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Erro ao carregar horários:", err);
+        const option = document.createElement("option");
+        option.textContent = "Erro ao carregar horários";
+        option.disabled = true;
+        horarioSelect.appendChild(option);
+    }
+}
+
+// Atualiza horários e totais ao mudar seleções
+document.getElementById("barbeiro").addEventListener("change", atualizarHorarios);
+document.getElementById("lista-procedimentos").addEventListener("change", (e) => {
+    if (e.target && e.target.matches("input[name='procedimento[]']")) {
+        atualizarTotais();
+        atualizarHorarios();
+    }
+});
+
+// ==============================
+// Exibir agendamentos futuros
+// ==============================
+async function ver() {
+    const params = new URLSearchParams(window.location.search);
+    const cpf = params.get("cpf");
+    const container = document.getElementById("proximoAgendamento");
+
+    if (!cpf) {
+        alert("CPF não encontrado na URL!");
+        return;
+    }
+
+    container.innerHTML = "<p>Carregando agendamentos...</p>";
+    container.style.display = 'block';
+
+    try {
+        const response = await fetch(`/barberduke/api/agendamentos.php?cpf=${cpf}`);
+        if (!response.ok) throw new Error("Erro na requisição de agendamentos");
+
+        const agendamentos = await response.json();
+        container.innerHTML = "";
+
+        if (agendamentos.length === 0) {
+            container.innerHTML = "<p>Você não possui agendamentos futuros.</p>";
+            return;
+        }
+
+        agendamentos.forEach(a => {
+            const div = document.createElement("div");
+            div.classList.add("agendamento-card");
+            div.innerHTML = `
+                <h3>${a.procedimentos}</h3>
+                <p><strong>Data:</strong> ${a.data.split('-').reverse().join('/')} às ${a.horario}</p>
+                <p><strong>Barbeiro:</strong> ${a.barbeiro}</p>
+                <p><strong>Status:</strong> ${a.status}</p>
+                <button class="botao-secundario" onclick="cancelarAgendamento(${a.id}, this)">Cancelar</button>
+            `;
+            container.appendChild(div);
+        });
+
+    } catch (erro) {
+        console.error(erro);
+        container.innerHTML = "<p style='color:red;'>Erro ao carregar agendamentos.</p>";
+    }
+}
+
+// ==============================
+// Cancelar agendamento
+// ==============================
+async function cancelarAgendamento(id, btn) {
+    const params = new URLSearchParams(window.location.search);
+    const cpf = params.get("cpf");
+
+    if (!cpf) {
+        alert("CPF não encontrado na URL!");
+        return;
+    }
+
+    if (!confirm("Tem certeza que deseja cancelar este agendamento?")) return;
+
+    btn.disabled = true;
+    btn.innerText = "Cancelando...";
+
+    try {
+        const response = await fetch('/barberduke/api/cancelar_agendamento.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agendamento_id: id, cpf: cpf })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            btn.closest('.agendamento-card').remove();
+            alert(result.message || "Agendamento cancelado com sucesso!");
+        } else {
+            alert("Erro ao cancelar: " + result.error);
+            btn.disabled = false;
+            btn.innerText = "Cancelar";
+        }
+
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao cancelar agendamento.");
+        btn.disabled = false;
+        btn.innerText = "Cancelar";
+    }
+}
+
+// ==============================
+// Submissão do formulário de agendamento
+// ==============================
+document.getElementById("agendamentoForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams(window.location.search);
+    const cpf = params.get("cpf");
+
+    if (!cpf) {
+        alert("CPF não encontrado na URL!");
+        return;
+    }
+
+    const barbeiroId = document.getElementById("barbeiro").value;
+    const data = document.getElementById("data").value;
+    const horario = document.getElementById("horario").value;
+
+    const checkboxes = document.querySelectorAll("input[name='procedimento[]']:checked");
+    const procedimentos = Array.from(checkboxes).map(cb => cb.value);
+
+    if (!barbeiroId || !data || !horario || procedimentos.length === 0) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/barberduke/api/salvar_agendamento.php?cpf=${cpf}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ barbeiro: barbeiroId, data, horario, procedimentos })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById("mensagemSucesso").style.display = "block";
+          document.getElementById("mensagemSucesso").textContent = "Agendamento realizado com sucesso!";
+          document.getElementById("mensagemErro").style.display = "none";
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          document.getElementById("mensagemErro").style.display = "block";
+          document.getElementById("mensagemErro").textContent = result.error || "Erro ao salvar agendamento.";
+        }
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("mensagemErro").style.display = "block";
+        document.getElementById("mensagemErro").textContent = "Erro de conexão ao salvar agendamento.";
+    }
+});
+function enviarWhatsApp() {
+    const barbeiroId = document.getElementById("barbeiro").value;
+    const data = document.getElementById("data").value;
+    const horario = document.getElementById("horario").value;
+    const nomeCliente = document.getElementById("nomeCliente").textContent;
+
+    if (!barbeiroId || !data || !horario) return; // evita abrir WhatsApp se dados incompletos
+
+    // Telefones fixos dos barbeiros
+    const telefones = {
+        1: "5531984204208", //Yuri
+        2: "553191319396", //Jefferson
+        3: "5531992310699" //Rubens
+    };
+
+    const barbeiroNome = document.getElementById("barbeiro").selectedOptions[0].text;
+    const telefone = telefones[barbeiroId];
+
+    if (telefone) {
+        const mensagem = `Olá ${barbeiroNome}, fiz um agendamento para ${data} às ${horario}.\n\nAbraços, ${nomeCliente}`;
+        const linkWhatsApp = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+        window.open(linkWhatsApp, "_blank"); // abre WhatsApp em nova aba
+    }
+}
+
+// ==============================
+// Botões de navegação
+// ==============================
+document.getElementById("btnPlanos").addEventListener("click", direção);
+document.getElementById("btnProximoAgendamento").addEventListener("click", ver);
+</script>
+</body>
+</html>

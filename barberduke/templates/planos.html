@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barber Duke Planos</title>
+    <link rel="stylesheet" href="/barberduke/static/planos.css">
+    <style>
+      /* Apenas para garantir que o botão funcione no toque */
+      .card-button {
+        display: none;
+      }
+      .card-button.show {
+        display: inline-block;
+      }
+    </style>
+</head>
+<body>
+    
+  <div class="b">
+    <h1>Barber Duke Planos</h1>
+  </div>
+
+  <section id="s">
+    <div class="card-container">
+
+      <div class="card card-3" style="background-color: #896728;">
+        <div class="card-details">
+          <p class="text-title">Duke basic</p>
+          <p class="text-body">Corte até duas vezes por semana <br><br> Valor: R$ 100,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/selv9wg4f5evu4s4" class="card-button">Veja mais</a>
+      </div>
+
+      <div class="card card-1" style="background-color: #C0C0C0;">
+        <div class="card-details">
+          <p class="text-title">Duke Plus</p>
+          <p class="text-body">Corte até 2 vezes por semana, com 4 pigmentações ao mês <br><br> Valor: R$ 150,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/2byu6xx9c4jqqcp1" class="card-button">Veja mais</a>
+      </div>
+
+      <div class="card card-2" style="background-color: #FFD700;">
+        <div class="card-details">
+          <p class="text-title">Duke premium</p>
+          <p class="text-body">Corte e barba até 2 vezes por semana <br><br> Valor: R$ 150,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/cruj7pc6322cojae" class="card-button">Veja mais</a>
+      </div>
+
+      <div class="card card-4" style="background-color: #288928;">
+        <div class="card-details">
+          <p class="text-title">Duke Pai e Filho</p>
+          <p class="text-body">O pai tem direito a cortar até 2 vezes por semana e o filho tem 2 cortes ao mês <br><br> Valor: R$ 160,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/z52j6iv0458btcjh" class="card-button">Veja mais</a>
+      </div>
+
+      <div class="card card-3" style="background-color: #cc4e38;">
+        <div class="card-details">
+          <p class="text-title">Duke bussines</p>
+          <p class="text-body">Corte até duas vezes por semana com sombrancelha <br><br> Valor: R$ 120,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/75lx6l7hridmdd2w" class="card-button">Veja mais</a>
+      </div>
+
+      <div class="card card-3" style="background-color: #286a89;">
+        <div class="card-details">
+          <p class="text-title">Duke personalizado</p>
+          <p class="text-body">2 cortes ao mês, barba até duas 2 vezes por semana<br><br> Valor: R$ 120,00</p>
+        </div>
+        <a href="https://www.asaas.com/c/o1p2l649qtcaon9t" class="card-button">Veja mais</a>
+      </div>
+
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 20px; background-color: #f0f0f0; margin-top: 40px;">
+    <p style="margin: 0; font-size: 14px; color: #555;">
+      © Barber Duke 2025 — Todos os direitos reservados.
+    </p>
+    <p style="margin: 5px 0 0 0; font-size: 12px; color: #888;">
+      Este site é protegido por direitos autorais. Nenhum conteúdo pode ser copiado ou reutilizado sem permissão.
+    </p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cards = document.querySelectorAll(".card");
+
+      cards.forEach(card => {
+        card.addEventListener("click", () => {
+          const button = card.querySelector(".card-button");
+          if (button) {
+            button.classList.toggle("show");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

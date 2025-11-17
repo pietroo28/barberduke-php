@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - Clientes</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Painel Administrativo - Clientes</h1>
+  </header>
+
+  <main>
+    <!-- Menu lateral -->
+    <div class="menu">
+      <nav>
+        <ul>
+          <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+          <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+          <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+          <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+          <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <section id="conteudo-principal">
+      <div class="clientes" id="secao-clientes">
+        <h1>Clientes</h1>
+
+        <!-- Filtros -->
+        <div class="filtros-clientes">
+          <h2>Filtrar Clientes</h2>
+
+          <label for="filtroBarbeiro">Selecione barbeiro:</label>
+          <select id="filtroBarbeiro">
+            <option value="">Todos</option>
+          </select>
+
+          <label for="filtroStatus">Selecione status:</label>
+          <select id="filtroStatus">
+            <option value="">Todos</option>
+            <option value="ativo">ativo</option>
+            <option value="confirmado">confirmado</option>
+            <option value="cancelado">cancelado</option>
+            <option value="passado">passado</option>
+          </select>
+
+          <label for="dataInicial">Data inicial:</label>
+          <input type="date" id="dataInicial">
+
+          <label for="dataFinal">Data final:</label>
+          <input type="date" id="dataFinal">
+
+          <button id="btnBuscarClientes">Buscar</button>
+        </div>
+
+        <!-- Lista de clientes -->
+        <div id="lista-clientes" class="lista-clientes">
+          Nenhum cliente encontrado.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Script JS -->
+  <script src="/barberduke/script/admin1.js"></script>
+</body>
+</html>

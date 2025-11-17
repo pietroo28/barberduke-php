@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <button class="menu-toggle">☰ Menu</button>
+  <title>Controle de Caixa</title>
+  <link rel="stylesheet" href="/barberduke/static/styles.css">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".menu");
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("aberto");
+
+        if (menu.classList.contains("aberto")) {
+            btn.textContent = "✕ Fechar";
+        } else {
+            btn.textContent = "☰ Menu";
+        }
+    });
+});
+</script>
+<body>
+  <header>
+    <h1>Controle de Caixa</h1>
+  </header>
+
+  <main>
+    <!-- Menu de navegação -->
+    <div class="menu">
+  <nav>
+    <ul>
+      <li><a href="/barberduke/templates/admin.html"></a></li>
+      <li><a href="/barberduke/templates/admin.html">Barbeiros</a></li>
+      <li><a href="/barberduke/templates/ag.html">Caixa</a></li>
+      <li><a href="/barberduke/templates/pr.html">Procedimentos</a></li>
+      <li><a href="/barberduke/templates/bloqueio.html">Bloqueio de Horários</a></li>
+      <li><a href="/barberduke/templates/agenda.html">Agenda</a></li>
+      <li><a href="/barberduke/templates/horarios.html">Horários</a></li>
+    </ul>
+  </nav>
+</div>
+
+    <section id="conteudo-principal">
+      <h2>Movimentações de Caixa</h2>
+
+      <!-- FILTROS -->
+      <div id="filtros">
+        <label for="selectBarbeiro">Barbeiro:</label>
+        <select id="selectBarbeiro">
+          <option value="">Todos</option>
+        </select>
+
+        <label>Data inicial:</label>
+        <input type="date" id="dataInicial">
+
+        <label>Data final:</label>
+        <input type="date" id="dataFinal">
+
+        <label>Tipo:</label>
+        <select id="selectTipo">
+          <option value="">Todos</option>
+          <option value="procedimento">Procedimento</option>
+          <option value="avulso">Avulso</option>
+          <option value="produto">Produto</option>
+          <option value="loja">Loja</option>
+          <option value="barbeiros">Barbeiros</option>
+        </select>
+
+        <label>Status:</label>
+        <select id="selectStatus">
+          <option value="">Todos</option>
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
+
+        <label>Forma:</label>
+        <select id="selectForma">
+          <option value="">Todos</option>
+          <option value="dinheiro">Dinheiro</option>
+          <option value="pix">Pix</option>
+          <option value="cartao credito">Cartão Crédito</option>
+          <option value="cartao debito">Cartão Débito</option>
+        </select>
+
+        <button onclick="filtrar()">Filtrar</button>
+        <button onclick="carregarCaixa()">Limpar filtro</button>
+      </div>
+
+      <br><hr>
+
+      <!-- RESUMO FINANCEIRO -->
+      <h3>Resumo Financeiro</h3>
+      <canvas id="graficoCaixa" width="400" height="200"></canvas>
+      <div id="totaisCaixa">
+        <p>Total Entrada: R$ <span id="totalEntrada">0.00</span></p>
+        <p>Total Saída: R$ <span id="totalSaida">0.00</span></p>
+      </div>
+
+      <!-- RESUMO DETALHADO -->
+      <hr>
+      <h3>Resumo Detalhado</h3>
+      <div id="resumoDetalhado">
+        <p>Total Despesas (salários + loja + saídas): R$ <span id="totalDespesas">0.00</span></p>
+        <p>Lucro Líquido: R$ <span id="lucroLiquido">0.00</span></p>
+
+        <h4>Meta de Faturamento</h4>
+        <label for="metaValor">Meta (R$):</label>
+        <input type="number" id="metaValor" placeholder="Ex: 5000"><br>
+
+        <label for="metaData">Até o dia:</label>
+        <input type="date" id="metaData"><br>
+
+        <button onclick="calcularMeta()">Calcular Meta</button>
+
+        <div id="resultadoMeta" style="margin-top:10px;">
+          <p>Faturamento diário necessário (5 dias úteis): R$ <span id="faturamentoDiario">0.00</span></p>
+          <p>Status da Meta: <span id="statusMeta">-</span></p>
+        </div>
+      </div>
+
+      <button onclick="carregarCaixa()">Atualizar Totais</button>
+
+      <!-- ADICIONAR MOVIMENTAÇÃO -->
+      <h3>Adicionar Movimentação</h3>
+      <label>Barbeiro:</label>
+      <select id="barbeiro_id"></select><br>
+
+      <label>Valor:</label>
+      <input type="number" id="valor"><br>
+
+      <label>Status:</label>
+      <select id="status">
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select><br>
+
+      <label>Tipo:</label>
+      <select id="tipo">
+        <option value="procedimento">Procedimento</option>
+        <option value="avulso">Avulso</option>
+        <option value="produto">Produto</option>
+        <option value="loja">Loja</option>
+        <option value="barbeiros">Barbeiros</option>
+      </select><br>
+
+      <label>Forma de pagamento:</label>
+      <select id="forma">
+        <option value="dinheiro">Dinheiro</option>
+        <option value="pix">Pix</option>
+        <option value="cartao credito">Cartão Crédito</option>
+        <option value="cartao debito">Cartão Débito</option>
+      </select><br>
+
+      <button onclick="adicionarMovimentacao()">Adicionar</button>
+
+      <!-- TABELA DE MOVIMENTAÇÕES -->
+      <table border="1" id="tabelaCaixa">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Barbeiro</th>
+            <th>Valor (R$)</th>
+            <th>Status</th>
+            <th>Tipo</th>
+            <th>Forma</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaCaixa">
+          <tr><td colspan="8">Carregando movimentações...</td></tr>
+        </tbody>
+      </table>
+
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/barberduke/script/caixa.js"></script>
+</body>
+</html>
