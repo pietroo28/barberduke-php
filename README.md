@@ -1,2 +1,2 @@
-# barberduke-php
-um site de barbearia com back and focado em php conectado ja com mysql e api do banco asaas
+# Sistema de Barbearia 
+Um sistema de barbearia com back-and em php conectado com o banco de dados e o banco financeiro do cliente
