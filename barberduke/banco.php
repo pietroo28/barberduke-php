@@ -5,8 +5,8 @@ error_reporting(E_ALL);
 
 // Sua chave de API (produçao ou sandbox)
 // Inclua o $ se a chave real tiver
-$apiKey = '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjhiZmRhMGEyLTAzMTAtNGU0My05ZDdiLTBhNTQxMWEwZjNkMTo6JGFhY2hfZDQ2NWU2ZjEtNGQyZS00ZjU4LTg0NzAtNDljNmRmOTA1NzZh';
-$baseUrl = 'https://www.asaas.com/api/v3';
+$apiKey = 'sua chave api';
+$baseUrl = 'https://www.asaas.com/api/v3'; //endepoint para proc
 
 /**
  * Função para fazer requisição GET à API da Asaas
@@ -38,3 +38,4 @@ function asaasGet($endpoint) {
 
     return ['status' => $httpCode, 'body' => $data];
 }
+
